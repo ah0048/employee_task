@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace employees_system.Models
 {
@@ -7,6 +8,7 @@ namespace employees_system.Models
         public int Id { get; set; }
         [ForeignKey(nameof(PropertyDefinition))]
         public int PropertyDefinitionId { get; set; }
+        [Required]
         public string Value { get; set; }
         public virtual PropertyDefinition PropertyDefinition { get; set; }
     }

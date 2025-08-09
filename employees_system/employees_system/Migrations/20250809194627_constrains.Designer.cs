@@ -11,8 +11,8 @@ using employees_system.Models;
 namespace employees_system.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250808194440_initial")]
-    partial class initial
+    [Migration("20250809194627_constrains")]
+    partial class constrains
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -88,12 +88,15 @@ namespace employees_system.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("PropertyDefinitions");
                 });
