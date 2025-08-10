@@ -7,5 +7,6 @@ namespace employees_system.Services.PropertyService
     {
         Task<ServiceResult> AddNewProperty(CreatePropertyViewModel createPropertyViewModel);
         Task<List<ShowPropertyViewModel>> GetAllProperties();
+        Task<List<PropertyDefinitionViewModel>> GetAllDefinitionsWithOptionsAsync();
     }
 }

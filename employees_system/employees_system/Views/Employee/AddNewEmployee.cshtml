@@ -1,7 +1,10 @@
 ﻿@model employees_system.ViewModels.Employees.CreateEmployeeViewModel
-
+@using employees_system.Models.Enums
+@using employees_system.ViewModels.Properties
 @{
     ViewData["Title"] = "AddNewEmployee";
+    var defs = (IEnumerable<PropertyDefinitionViewModel>)ViewBag.PropertyDefinitions ?? Enumerable.Empty<PropertyDefinitionViewModel>();
+    var defsList = defs.ToList();
 }
 
 <h1>AddNewEmployee</h1>
@@ -14,14 +17,61 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Code" class="control-label"></label>
-                <input asp-for="Code" class="form-control" />
+                <input asp-for="Code" class="form-control" required />
                 <span asp-validation-for="Code" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control" required />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+
+            <h4>Custom Properties</h4>
+
+            @for (int i = 0; i < defsList.Count; i++)
+            {
+                var def = defsList[i];
+                <div class="form-group">
+                    <label>
+                        @def.Name
+                        @if (def.IsRequired)
+                        {
+                            <span style="color:red">*</span>
+                        }
+                    </label>
+
+                    <input type="hidden" name="Properties[@i].PropertyDefinitionId" value="@def.Id" />
+
+                    @switch (def.Type)
+                    {
+                        case PropertyType.String:
+                            <input name="Properties[@i].Value" type="text" @(def.IsRequired ? "required" : "") class="form-control" />
+                            break;
+
+                        case PropertyType.Integer:
+                            <input name="Properties[@i].Value" type="number" @(def.IsRequired ? "required" : "") class="form-control" />
+                            break;
+
+                        case PropertyType.Date:
+                            <input name="Properties[@i].Value" type="date" @(def.IsRequired ? "required" : "") class="form-control" />
+                            break;
+
+                        case PropertyType.Dropdown:
+                            <select name="Properties[@i].Value" @(def.IsRequired ? "required" : "") class="form-control">
+                                <option value="">-- select --</option>
+                                @foreach (var opt in def.Options)
+                                {
+                                    <option value="@opt">@opt</option>
+                                }
+                            </select>
+                            break;
+
+                        default:
+                            <input name="Properties[@i].Value" type="text" class="form-control" />
+                            break;
+                    }
+                </div>
+            }
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -34,5 +84,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

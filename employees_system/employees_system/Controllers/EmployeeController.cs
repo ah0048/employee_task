@@ -1,6 +1,7 @@
 ﻿using employees_system.Services.EmployeeService;
 using employees_system.Services.PropertyService;
 using employees_system.ViewModels.Employees;
+using employees_system.ViewModels.Properties;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -9,10 +10,12 @@ namespace employees_system.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _employeeService;
+        private readonly IPropertyService _propertyService;
 
-        public EmployeeController(IEmployeeService employeeService)
+        public EmployeeController(IEmployeeService employeeService, IPropertyService propertyService)
         {
             _employeeService = employeeService;
+            _propertyService = propertyService;
         }
         public async Task<IActionResult> Index()
         {
@@ -20,9 +23,18 @@ namespace employees_system.Controllers
             return View("Index", employees);
         }
 
-        public IActionResult NewEmployee()
+        public async Task<IActionResult> NewEmployee()
         {
-            return View("AddNewEmployee");
+            var propertyDefs = await _propertyService.GetAllDefinitionsWithOptionsAsync();
+            
+            var createEmpoloyeeVM = new CreateEmployeeViewModel
+            {
+                Properties = new List<PropertyInputViewModel>()
+            };
+
+            ViewBag.PropertyDefinitions = propertyDefs;
+
+            return View("AddNewEmployee", createEmpoloyeeVM);
         }
         public async Task<IActionResult> AddNewEmployee(CreateEmployeeViewModel createEmployeeViewModel)
         {

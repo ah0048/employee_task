@@ -7,7 +7,7 @@
 <h1>All Employees</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="NewEmployee">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -22,9 +22,9 @@
     </thead>
     <tbody>
 @foreach (var emp in Model.Employees) {
-            <tr>@emp.Code</tr>
-            <tr>@emp.Name</tr>
             <tr>
+            <td>@emp.Code</td>
+            <td>@emp.Name</td>
                 @foreach (var value in emp.PropertyValues)
                 {
                     <td>@value</td>

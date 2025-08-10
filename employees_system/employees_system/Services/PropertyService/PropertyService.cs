@@ -97,5 +97,18 @@ namespace employees_system.Services.PropertyService
             }
             return showPropertyViewModels;
         }
+
+        public async Task<List<PropertyDefinitionViewModel>> GetAllDefinitionsWithOptionsAsync()
+        {
+            var properties = await _unit.PropertyDefinitionRepo.GetAllWithPropertiesOptionsAsync();
+            return properties.Select(pd => new PropertyDefinitionViewModel
+            {
+                Id = pd.Id,
+                Name = pd.Name,
+                Type = pd.Type,
+                IsRequired = pd.IsRequired,
+                Options = pd.Options?.Select(o => o.Value).ToList() ?? new List<string>()
+            }).ToList();
+        }
     }
 }
