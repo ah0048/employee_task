@@ -1,35 +1,145 @@
 ﻿@model employees_system.ViewModels.Employees.EmployeeTableData
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Employee Dashboard";
 }
 
-<h1>All Employees</h1>
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-1">
+                <i class="fas fa-users text-primary me-2"></i>Employee Dashboard
+            </h2>
+            <p class="text-muted mb-0">Manage your organization's employee database</p>
+        </div>
+        <div class="btn-group" role="group">
+            <a asp-action="NewEmployee" class="btn btn-success btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Add Employee
+            </a>
+            <a asp-controller="Property" asp-action="NewProperty" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-plus me-2"></i>Add Property
+            </a>
+        </div>
+    </div>
 
-<p>
-    <a asp-action="NewEmployee">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-        <th>Code</th>
-        <th>Name</th>
-            @foreach (var header in Model.PropertyHeaders)
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Total Employees</h6>
+                            <h3 class="mb-0">@Model.Employees.Count()</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-users fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Active Properties</h6>
+                            <h3 class="mb-0">@Model.PropertyHeaders.Count()</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-cogs fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Quick Actions</h6>
+                            <div class="d-grid gap-1">
+                                <a asp-controller="Property" asp-action="Index" class="btn btn-light btn-sm">
+                                    <i class="fas fa-list me-1"></i>Manage Properties
+                                </a>
+                            </div>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-tachometer-alt fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-table me-2"></i>All Employees
+            </h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Employees.Any())
             {
-                <th>@header</th>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">
+                                    <i class="fas fa-id-card me-1"></i>Code
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-user me-1"></i>Name
+                                </th>
+                                @foreach (var header in Model.PropertyHeaders)
+                                {
+                                    <th scope="col">
+                                        <i class="fas fa-tag me-1"></i>@header
+                                    </th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var emp in Model.Employees)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@emp.Code</td>
+                                    <td>@emp.Name</td>
+                                    @foreach (var value in emp.PropertyValues)
+                                    {
+                                        <td>
+                                            @if (string.IsNullOrEmpty(value))
+                                            {
+                                                <span class="text-muted fst-italic">Not set</span>
+                                            }
+                                            else
+                                            {
+                                                @value
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var emp in Model.Employees) {
-            <tr>
-            <td>@emp.Code</td>
-            <td>@emp.Name</td>
-                @foreach (var value in emp.PropertyValues)
-                {
-                    <td>@value</td>
-                }
-            </tr>
-}
-    </tbody>
-</table>
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No employees found</h5>
+                    <p class="text-muted">Start by adding your first employee to the system.</p>
+                    <a asp-action="NewEmployee" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Add First Employee
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
