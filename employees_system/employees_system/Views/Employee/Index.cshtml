@@ -1,0 +1,35 @@
+﻿@model employees_system.ViewModels.Employees.EmployeeTableData
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>All Employees</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+        <th>Code</th>
+        <th>Name</th>
+            @foreach (var header in Model.PropertyHeaders)
+            {
+                <th>@header</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var emp in Model.Employees) {
+            <tr>@emp.Code</tr>
+            <tr>@emp.Name</tr>
+            <tr>
+                @foreach (var value in emp.PropertyValues)
+                {
+                    <td>@value</td>
+                }
+            </tr>
+}
+    </tbody>
+</table>

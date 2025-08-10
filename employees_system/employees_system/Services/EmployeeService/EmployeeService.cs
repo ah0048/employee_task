@@ -5,7 +5,7 @@ using employees_system.ViewModels.Employees;
 
 namespace employees_system.Services.EmployeeService
 {
-    public class EmployeeService: IEmployeeService
+    public class EmployeeService : IEmployeeService
     {
         private readonly IUnitOfWork _unit;
         private readonly IMapper _mapper;

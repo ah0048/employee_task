@@ -14,20 +14,17 @@ namespace employees_system.Controllers
             _propertyService = propertyService;
         }
 
-        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var properties = await _propertyService.GetAllProperties();
             return View("Index", properties);
         }
 
-
-        [HttpGet]
         public IActionResult NewProperty()
         {
             return View("AddNewProperty");
         }
-        [HttpPost]
+
         public async Task<IActionResult> AddNewProperty(CreatePropertyViewModel createPropertyViewModel)
         {
             if (ModelState.IsValid)
