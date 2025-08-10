@@ -7,7 +7,9 @@ namespace employees_system.ViewModels.Properties
     {
         [Required] 
         public string Name { get; set; } = null!;
+        [Required]
         public PropertyType Type { get; set; }
+        [Required]
         public bool IsRequired { get; set; }
         public string? DropdownOptionsCommaSeparated { get; set; }
     }

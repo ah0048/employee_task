@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace employees_system.UnitOfWorks
 {
-    public class UnitOfWork
+    public class UnitOfWork: IUnitOfWork
     {
         private readonly AppDbContext _db;
         private IEmployeePropertyRepo employeePropertyRepo;
