@@ -43,5 +43,13 @@ namespace employees_system.Repositories.PropertyDefinitionRepo
         {
             return await _db.PropertyDefinitions.FindAsync(id);
         }
+
+        public async Task<List<PropertyDefinition>> GetAllWithPropertiesOptionsAsync()
+        {
+            return await _db.PropertyDefinitions
+                .OrderBy(p=> p.Id)
+                .Include(p => p.Options)
+                .ToListAsync();
+        }
     }
 }

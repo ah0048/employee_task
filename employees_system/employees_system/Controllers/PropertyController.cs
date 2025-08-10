@@ -13,6 +13,15 @@ namespace employees_system.Controllers
         {
             _propertyService = propertyService;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var properties = await _propertyService.GetAllProperties();
+            return View("Index", properties);
+        }
+
+
         [HttpGet]
         public IActionResult NewProperty()
         {
@@ -34,17 +43,14 @@ namespace employees_system.Controllers
                 if (result.Success)
                 {
                     TempData["SuccessMessage"] = "Property created successfully!";
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index");
                 }
                 else
                 {
-                    // Add validation errors to ModelState
                     foreach (var error in result.ValidationErrors)
                     {
                         ModelState.AddModelError("", error);
                     }
-
-                    // Add general error if exists
                     if (!string.IsNullOrEmpty(result.ErrorMessage))
                     {
                         ModelState.AddModelError("", result.ErrorMessage);

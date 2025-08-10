@@ -21,14 +21,12 @@ namespace employees_system.Services.PropertyService
         {
             try
             {
-                // Check if property name already exists
                 var existingProperties = await _unit.PropertyDefinitionRepo.GetAllAsync();
                 if (existingProperties.Any(p => p.Name.Equals(createPropertyViewModel.Name, StringComparison.OrdinalIgnoreCase)))
                 {
                     return ServiceResult.CreateValidationError($"A property with the name '{createPropertyViewModel.Name}' already exists.");
                 }
 
-                // Validate dropdown has options
                 if (createPropertyViewModel.Type == PropertyType.Dropdown)
                 {
                     if (string.IsNullOrWhiteSpace(createPropertyViewModel.DropdownOptionsCommaSeparated))
@@ -78,9 +76,26 @@ namespace employees_system.Services.PropertyService
             }
             catch (Exception ex)
             {
-                // Log the exception here if you have a logger
                 return ServiceResult.CreateError("An unexpected error occurred while creating the property. Please try again.");
             }
+        }
+
+        public async Task<List<ShowPropertyViewModel>> GetAllProperties()
+        {
+            var properties = await _unit.PropertyDefinitionRepo.GetAllWithPropertiesOptionsAsync();
+            List<ShowPropertyViewModel> showPropertyViewModels = new List<ShowPropertyViewModel>();
+            foreach (var property in properties)
+            {
+                ShowPropertyViewModel showPropertyViewModel = new ShowPropertyViewModel
+                {
+                    Name = property.Name,
+                    Required = property.IsRequired.ToString(),
+                    Type = property.Type.ToString(),
+                    options = string.Join(", ", property.Options.Select(o => o.Value))
+                };
+                showPropertyViewModels.Add(showPropertyViewModel);
+            }
+            return showPropertyViewModels;
         }
     }
 }

@@ -6,5 +6,6 @@ namespace employees_system.Services.PropertyService
     public interface IPropertyService
     {
         Task<ServiceResult> AddNewProperty(CreatePropertyViewModel createPropertyViewModel);
+        Task<List<ShowPropertyViewModel>> GetAllProperties();
     }
 }
