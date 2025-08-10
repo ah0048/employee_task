@@ -9,6 +9,6 @@ namespace employees_system.ViewModels.Employees
         public string Code { get; set; }
         [Required] 
         public string Name { get; set; }
-        public ICollection<PropertyInputViewModel> Properties { get; set; }
+        public ICollection<PropertyInputViewModel>? Properties { get; set; }
     }
 }

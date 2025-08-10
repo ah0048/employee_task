@@ -42,7 +42,7 @@ namespace employees_system.Services.EmployeeService
             var requiredProps = await _unit.PropertyDefinitionRepo.GetAllRequiredAsync();
             foreach (var requiredProp in requiredProps)
             {
-                var providedProp = createEmployeeViewModel.Properties
+                var providedProp = createEmployeeViewModel.Properties?
                     .FirstOrDefault(p => p.PropertyDefinitionId == requiredProp.Id);
 
                 if (providedProp == null || string.IsNullOrWhiteSpace(providedProp.Value))
@@ -56,14 +56,39 @@ namespace employees_system.Services.EmployeeService
 
             try
             {
-                var newEmployee = _mapper.Map<Employee>(createEmployeeViewModel);
+                var newEmployee = new Employee
+                {
+                    Code = createEmployeeViewModel.Code,
+                    Name = createEmployeeViewModel.Name
+                };
+
                 await _unit.EmployeeRepo.AddAsync(newEmployee);
                 await _unit.SaveAsync();
+
+                if (createEmployeeViewModel.Properties?.Any() == true)
+                {
+                    var employeeProperties = createEmployeeViewModel.Properties
+                        .Where(p => !string.IsNullOrWhiteSpace(p.Value))
+                        .Select(p => new EmployeeProperty
+                        {
+                            EmployeeId = newEmployee.Id,
+                            PropertyDefinitionId = p.PropertyDefinitionId,
+                            Value = p.Value.Trim()
+                        })
+                        .ToList();
+
+                    if (employeeProperties.Any())
+                    {
+                        await _unit.EmployeePropertyRepo.AddRangeAsync(employeeProperties);
+                        await _unit.SaveAsync();
+                    }
+                }
+
                 return ServiceResult.CreateSuccess();
             }
             catch (Exception ex)
             {
-                return ServiceResult.CreateError($"An error occurred while adding the employee: {ex.Message}");
+                return ServiceResult.CreateError($"An error occurred while adding the employee: {ex?.InnerException?.Message}");
             }
         }
 
