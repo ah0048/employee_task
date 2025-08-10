@@ -51,5 +51,11 @@ namespace employees_system.Repositories.PropertyDefinitionRepo
                 .Include(p => p.Options)
                 .ToListAsync();
         }
+
+        public async Task<List<PropertyDefinition>> GetAllRequiredAsync()
+        {
+            return await _db.PropertyDefinitions.Where(p => p.IsRequired).ToListAsync();
+        }
+
     }
 }

@@ -1,7 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace employees_system.Models
 {
+    [Index(nameof(Code), IsUnique = true)]
+    [Index(nameof(Name), IsUnique = true)]
+
     public class Employee
     {
         public int Id { get; set; }

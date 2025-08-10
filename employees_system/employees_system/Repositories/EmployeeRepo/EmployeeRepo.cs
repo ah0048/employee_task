@@ -50,5 +50,15 @@ namespace employees_system.Repositories.EmployeeRepo
                     .ThenInclude(p => p.PropertyDefinition)
                 .ToListAsync();
         }
+
+        public async Task<bool> IsDuplicateCode(string code)
+        {
+            return await _db.Employees.AnyAsync(e => e.Code == code);
+        }
+
+        public async Task<bool> IsDuplicateName(string name)
+        {
+            return await _db.Employees.AnyAsync(e => e.Name == name);
+        }
     }
 }

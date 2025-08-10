@@ -40,9 +40,26 @@ namespace employees_system.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _employeeService.AddNewEmployee(createEmployeeViewModel);
-                return RedirectToAction("Index");
+                var result = await _employeeService.AddNewEmployee(createEmployeeViewModel);
+
+                if (result.Success)
+                {
+                    TempData["SuccessMessage"] = "Employee created successfully!";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    foreach (var error in result.ValidationErrors)
+                        ModelState.AddModelError("", error);
+
+                    if (!string.IsNullOrEmpty(result.ErrorMessage))
+                        ModelState.AddModelError("", result.ErrorMessage);
+                }
             }
+
+            var propertyDefs = await _propertyService.GetAllDefinitionsWithOptionsAsync();
+            ViewBag.PropertyDefinitions = propertyDefs;
+
             return View("AddNewEmployee", createEmployeeViewModel);
         }
 

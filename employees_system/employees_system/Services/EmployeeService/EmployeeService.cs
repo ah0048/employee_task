@@ -15,11 +15,56 @@ namespace employees_system.Services.EmployeeService
             _mapper = mapper;
         }
 
-        public async Task AddNewEmployee(CreateEmployeeViewModel createEmployeeViewModel)
+        public async Task<ServiceResult> AddNewEmployee(CreateEmployeeViewModel createEmployeeViewModel)
         {
-            var newEmployee = _mapper.Map<Employee>(createEmployeeViewModel);
-            await _unit.EmployeeRepo.AddAsync(newEmployee);
-            await _unit.SaveAsync();
+            var validationErrors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(createEmployeeViewModel.Code))
+                validationErrors.Add("Employee Code is required.");
+
+            if (string.IsNullOrWhiteSpace(createEmployeeViewModel.Name))
+                validationErrors.Add("Employee Name is required.");
+
+            if (!string.IsNullOrWhiteSpace(createEmployeeViewModel.Code))
+            {
+                bool codeExists = await _unit.EmployeeRepo.IsDuplicateCode(createEmployeeViewModel.Code);
+                if (codeExists)
+                    validationErrors.Add($"Employee Code '{createEmployeeViewModel.Code}' already exists.");
+            }
+
+            if (!string.IsNullOrWhiteSpace(createEmployeeViewModel.Name))
+            {
+                bool nameExists = await _unit.EmployeeRepo.IsDuplicateName(createEmployeeViewModel.Name);
+                if (nameExists)
+                    validationErrors.Add($"Employee Name '{createEmployeeViewModel.Name}' already exists.");
+            }
+
+            var requiredProps = await _unit.PropertyDefinitionRepo.GetAllRequiredAsync();
+            foreach (var requiredProp in requiredProps)
+            {
+                var providedProp = createEmployeeViewModel.Properties
+                    .FirstOrDefault(p => p.PropertyDefinitionId == requiredProp.Id);
+
+                if (providedProp == null || string.IsNullOrWhiteSpace(providedProp.Value))
+                {
+                    validationErrors.Add($"Property '{requiredProp.Name}' is required.");
+                }
+            }
+
+            if (validationErrors.Any())
+                return ServiceResult.CreateValidationErrors(validationErrors);
+
+            try
+            {
+                var newEmployee = _mapper.Map<Employee>(createEmployeeViewModel);
+                await _unit.EmployeeRepo.AddAsync(newEmployee);
+                await _unit.SaveAsync();
+                return ServiceResult.CreateSuccess();
+            }
+            catch (Exception ex)
+            {
+                return ServiceResult.CreateError($"An error occurred while adding the employee: {ex.Message}");
+            }
         }
 
         public async Task<EmployeeTableData> getAllEmployees()
