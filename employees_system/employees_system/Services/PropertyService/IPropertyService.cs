@@ -1,9 +1,10 @@
-﻿using employees_system.ViewModels.Properties;
+﻿using employees_system.Models;
+using employees_system.ViewModels.Properties;
 
 namespace employees_system.Services.PropertyService
 {
     public interface IPropertyService
     {
-        Task AddNewProperty(CreatePropertyViewModel createPropertyViewModel);
+        Task<ServiceResult> AddNewProperty(CreatePropertyViewModel createPropertyViewModel);
     }
 }

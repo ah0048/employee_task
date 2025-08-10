@@ -43,5 +43,12 @@ namespace employees_system.Repositories.EmployeeRepo
             }
             return Task.CompletedTask;
         }
+        public async Task<List<Employee>> GetAllWithPropertiesAsync()
+        {
+            return await _db.Employees
+                .Include(e => e.Properties)
+                    .ThenInclude(p => p.PropertyDefinition)
+                .ToListAsync();
+        }
     }
 }

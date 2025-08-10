@@ -36,7 +36,7 @@ namespace employees_system.Repositories.PropertyDefinitionRepo
 
         public async Task<List<PropertyDefinition>> GetAllAsync()
         {
-            return await _db.PropertyDefinitions.ToListAsync();
+            return await _db.PropertyDefinitions.OrderBy(p=> p.Id).ToListAsync();
         }
 
         public async Task<PropertyDefinition> GetByIdAsync(int id)

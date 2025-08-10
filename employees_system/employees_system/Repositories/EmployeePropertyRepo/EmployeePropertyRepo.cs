@@ -59,22 +59,22 @@ namespace employees_system.Repositories.EmployeePropertyRepo
             }
             return Task.CompletedTask;
         }
-        public async Task<EmployeeProperty> GetByEmployeeIdAsync(int employeeId)
+        public async Task<List<EmployeeProperty>> GetByEmployeeIdAsync(int employeeId)
         {
-            return await _db.EmployeeProperties.FirstOrDefaultAsync(ep => ep.EmployeeId == employeeId);
+            return await _db.EmployeeProperties.Where(ep => ep.EmployeeId == employeeId).ToListAsync();
         }
         public async Task DeleteByEmployeeIdAsync(int employeeId)
         {
-            var employeeProperty = await GetByEmployeeIdAsync(employeeId);
+            var employeeProperty = await _db.EmployeeProperties.FirstOrDefaultAsync(ep=> ep.EmployeeId == employeeId);
             if (employeeProperty != null)
             {
                 _db.EmployeeProperties.Remove(employeeProperty);
             }
         }
 
-        public async Task<EmployeeProperty> GetByPropertyDefinitionIdAsync(int propertyDefId)
+        public async Task<List<EmployeeProperty>> GetByPropertyDefinitionIdAsync(int propertyDefId)
         {
-            return await _db.EmployeeProperties.FirstOrDefaultAsync(ep => ep.PropertyDefinitionId == propertyDefId);
+            return await _db.EmployeeProperties.Where(ep => ep.PropertyDefinitionId == propertyDefId).ToListAsync();
         }
     }
 }
